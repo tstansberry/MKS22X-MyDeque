@@ -1,6 +1,18 @@
+import java.util.*;
+
 public class MyDeque<E>{
   private E[] data;
   private int size, start, end;
+
+  public static void main(String[] args) {
+    MyDeque<String> test = new MyDeque<String>(10);
+    //System.out.println(test.toStringDebug());
+    for (Integer x = 0; x < 13; x ++) {
+      test.addFirst(x + "");
+      //System.out.println(x + "");
+    }
+    System.out.println(test);
+  }
 
   @SuppressWarnings("unchecked")
   public MyDeque() {
@@ -13,67 +25,98 @@ public class MyDeque<E>{
   @SuppressWarnings("unchecked")
   public MyDeque(int initialCapacity) {
     data = (E[])new Object[initialCapacity];
+    //System.out.println(printArr(data));
     size = 0;
     start = 0;
     end = 0;
   }
 
   public int size() {
-    return size;
+    return mod((end - start), data.length);
   }
-/*
+
+  private String printArr(E[] arr) {
+    String output = "";
+    for (E x: arr) {
+      output += x + " ";
+    }
+    return output;
+  }
+
   public String toString() {
+    //System.out.println("Start: " + start);
+    //System.out.println("End: " + end);
+    //System.out.println(printArr(data));
 
+    String output = "{";
+    for (int x = 0; x < size(); x ++) {
+      output += data[(start + x) % data.length] + " ";
+    }
+    output += "}";
+    return output;
   }
-*/
+
+  public String toStringDebug() {
+    String output = "";
+    for(int x = 0; x < data.length; x ++) {
+      output += data[x] + " ";
+      //System.out.println(data[counter]);
+    }
+    return output;
+  }
+
   public void addFirst(E element) {
-    if(start == 0) {
-      start = data.length - 1;
-      data[start] = element;
-    }
-    else if (start == end && size > 0) {
-      @SuppressWarnings("unchecked")
-      E[] replacement = (E[])new Object[size * 2];
-      resize(data, replacement);
-      data = replacement;
-      addFirst(element);
-    }
-    else {
-      data[start] = element;
-      start --;
-    }
+    //System.out.println("ADDING: " + element + " SIZE: " + size + " START: " + start + " END: " + end);
+    //System.out.println(printArr(data) + "\n");
+    if (element == null) throw new NullPointerException();
+    if (size() >= data.length - 1) resize();
+    start = mod(start-1,data.length);
+    data[start] = element;
   }
 
-  private void resize(E[] small, E[] large) {
-    int x = start;
-    for (int counter = 0; counter < size; counter ++) {
-      if (x == small.length) {
-        x = 0;
-      }
-      large[counter] = small[x];
-      x ++;
+  private void resize() {
+    @SuppressWarnings("unchecked")
+    E[] temp = (E[])new Object[data.length * 2 + 1];
+    for (int i = 0; i < data.length; i++) {
+      temp[i] = data[(start+i) % data.length];
     }
+    end = size();
     start = 0;
-    end = size;
+    data = temp;
   }
-/*
-  public void addLast(E element) {
 
+  private int mod(int x, int y) {
+    int result = x % y;
+    if (result < 0) result += y;
+    return result;
+  }
+
+  public void addLast(E element) {
+    if (element == null) throw new NullPointerException();
+    if (size() >= data.length - 1) resize();
+    data[end] = element;
+    end = (end + 1) % data.length;
   }
 
   public E removeFirst() {
-
+    if (size() == 0) throw new NoSuchElementException();
+    start = (start + 1) % data.length;
+    return data[mod(start-1,data.length)];
   }
 
   public E removeLast() {
-
+    if (size() == 0) throw new NoSuchElementException();
+    end = mod(end - 1, data.length);
+    return data[(end+1)%data.length];
   }
-*/
-  public E getFirst(E element) {
+
+  public E getFirst() {
+    if (size() == 0) throw new NoSuchElementException();
     return data[start];
   }
 
-  public E getLast(E element) {
+  public E getLast() {
+    if (size() == 0) throw new NoSuchElementException();
     if (end == 0) return data[data.length - 1];
     return data[end - 1];
   }
