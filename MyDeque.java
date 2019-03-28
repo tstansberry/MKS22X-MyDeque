@@ -18,8 +18,6 @@ public class MyDeque<E>{
   public MyDeque() {
     data = (E[])new Object[10];
     size = 0;
-    start = 0;
-    end = 0;
   }
 
   @SuppressWarnings("unchecked")
@@ -27,12 +25,10 @@ public class MyDeque<E>{
     data = (E[])new Object[initialCapacity];
     //System.out.println(printArr(data));
     size = 0;
-    start = 0;
-    end = 0;
   }
 
   public int size() {
-    return alteredMod((end - start), data.length);
+    return alteredMod(end - start);
   }
 
   private String printArr(E[] arr) {
@@ -69,7 +65,7 @@ public class MyDeque<E>{
     //System.out.println(printArr(data) + "\n");
     if (element == null) throw new NullPointerException();
     if (size >= data.length - 1) resize();
-    start = alteredMod(start - 1, data.length);
+    start = alteredMod(start - 1);
     data[start] = element;
     size ++;
   }
@@ -85,10 +81,8 @@ public class MyDeque<E>{
     data = temp;
   }
 
-  private int alteredMod(int one, int two) {
-    int output = one % two;
-    if (output < 0) output += two;
-    return output;
+  private int alteredMod(int input) {
+    return (input + data.length) % data.length;
   }
 
   public void addLast(E element) {
@@ -103,14 +97,18 @@ public class MyDeque<E>{
     if (size == 0) throw new NoSuchElementException();
     start = (start + 1) % data.length;
     size --;
-    return data[alteredMod(start - 1, data.length)];
+    return data[alteredMod(start - 1)];
   }
 
   public E removeLast() {
+    //System.out.println("Start: " + start + "End: " + end);
     if (size == 0) throw new NoSuchElementException();
-    end = alteredMod(end - 1, data.length);
+    end = alteredMod(end - 1);
     size --;
-    return data[(end + 1) % data.length];
+    //System.out.println("Output: " + data[(end + 1) % data.length]);
+    int index = (end + 1) % data.length - 1;
+    if (index < 0) index = data.length - 1;
+    return data[index];
   }
 
   public E getFirst() {

@@ -12,18 +12,18 @@ public class Calculator {
     MyDeque<Double> stack = new MyDeque<Double>();
     String temp = "";
     for(int x = 0; x < s.length(); x ++) {
-      System.out.println("Stack: " + stack.toStringDebug());
-      System.out.println(s.charAt(x));
+      //System.out.println("Stack: " + stack);
+      //System.out.println(s.charAt(x));
       if (s.charAt(x) == ' ') {
-        stack.addLast(Double.parseDouble(temp));
+        if (temp.length() > 0)stack.addLast(Double.parseDouble(temp));
         temp = "";
       }
       else if (checkSign(s.charAt(x))) {
         try {
           Double second = stack.removeLast();
           Double first = stack.removeLast();
-          System.out.println("First: " + first);
-          System.out.println("Second: " + second);
+          //System.out.println("First: " + first);
+          //System.out.println("Second: " + second);
           stack.addLast(calculate(first, second, s.charAt(x)));
         }
         catch (Exception e) {
@@ -56,7 +56,7 @@ public class Calculator {
     if (sign == '%') {
       output = x % y;
     }
-    System.out.println("Adding: " + output);
+    //System.out.println("Adding: " + output);
     return output;
   }
 }
