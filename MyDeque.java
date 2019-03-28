@@ -32,7 +32,7 @@ public class MyDeque<E>{
   }
 
   public int size() {
-    return mod((end - start), data.length);
+    return alteredMod((end - start), data.length);
   }
 
   private String printArr(E[] arr) {
@@ -48,7 +48,7 @@ public class MyDeque<E>{
     //System.out.println("End: " + end);
     //System.out.println(printArr(data));
     String output = "{";
-    for (int x = 0; x < size(); x ++) {
+    for (int x = 0; x < size; x ++) {
       output += data[(start + x) % data.length] + " ";
     }
     output += "}";
@@ -68,9 +68,10 @@ public class MyDeque<E>{
     //System.out.println("ADDING: " + element + " SIZE: " + size + " START: " + start + " END: " + end);
     //System.out.println(printArr(data) + "\n");
     if (element == null) throw new NullPointerException();
-    if (size() >= data.length - 1) resize();
-    start = mod(start - 1, data.length);
+    if (size >= data.length - 1) resize();
+    start = alteredMod(start - 1, data.length);
     data[start] = element;
+    size ++;
   }
 
   private void resize() {
@@ -79,12 +80,12 @@ public class MyDeque<E>{
     for (int x = 0; x < data.length; x ++) {
       temp[x] = data[(start + x) % data.length];
     }
-    end = size();
+    end = size;
     start = 0;
     data = temp;
   }
 
-  private int mod(int one, int two) {
+  private int alteredMod(int one, int two) {
     int output = one % two;
     if (output < 0) output += two;
     return output;
@@ -92,30 +93,33 @@ public class MyDeque<E>{
 
   public void addLast(E element) {
     if (element == null) throw new NullPointerException();
-    if (size() >= data.length - 1) resize();
+    if (size >= data.length - 1) resize();
     data[end] = element;
     end = (end + 1) % data.length;
+    size ++;
   }
 
   public E removeFirst() {
-    if (size() == 0) throw new NoSuchElementException();
+    if (size == 0) throw new NoSuchElementException();
     start = (start + 1) % data.length;
-    return data[mod(start - 1, data.length)];
+    size --;
+    return data[alteredMod(start - 1, data.length)];
   }
 
   public E removeLast() {
-    if (size() == 0) throw new NoSuchElementException();
-    end = mod(end - 1, data.length);
+    if (size == 0) throw new NoSuchElementException();
+    end = alteredMod(end - 1, data.length);
+    size --;
     return data[(end + 1) % data.length];
   }
 
   public E getFirst() {
-    if (size() == 0) throw new NoSuchElementException();
+    if (size == 0) throw new NoSuchElementException();
     return data[start];
   }
 
   public E getLast() {
-    if (size() == 0) throw new NoSuchElementException();
+    if (size == 0) throw new NoSuchElementException();
     if (end == 0) return data[data.length - 1];
     return data[end - 1];
   }
